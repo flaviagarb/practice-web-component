@@ -18,18 +18,16 @@ class TodoList extends HTMLElement {
 
     connectedCallback() {
         const templateCopy = template.content.cloneNode(true);
-
+        // busca el componente de input-action
         const inputAction = templateCopy.querySelector("input-action");
 
         inputAction.addEventListener("input-action-submit", (event) => {
             const text = event.detail;
 
-            const newTodoItem = document.createElement("todo-item");
+            const newTodoItem = document.createElement("div");
 
+            newTodoItem.innerHTML = `<todo-item text="${text}"></todo-item>`
             this.shadowRoot.querySelector(".todo-items-wrapper").appendChild(newTodoItem)
-
-            newTodoItem.setAttribute("text", text);
-
         })
 
         this.shadowRoot.appendChild(templateCopy)
