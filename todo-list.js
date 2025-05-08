@@ -1,6 +1,33 @@
 const template = document.createElement("template");
 template.innerHTML = `
-  <div class="todo-list">
+ <style>
+    * {
+    font-family: Arial, sans-serif;
+    }
+    .todo-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background-color: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .todo-title {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+    .todo-items-wrapper {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  </style>
+  <div class="todo-container">
+    <h2 class="todo-title">TO-DO LIST</h2>
     <input-action></input-action>
     <div class="todo-items-wrapper"></div>
   </div>
