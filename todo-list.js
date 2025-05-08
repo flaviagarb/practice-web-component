@@ -1,6 +1,4 @@
 const template = document.createElement("template");
-// Primer paso añadimos input-action dentro de este componente
-// Crear un nuevo componente todo-item-wrapper para insertar tareas
 template.innerHTML = `
   <div class="todo-list">
     <input-action></input-action>
@@ -18,19 +16,70 @@ class TodoList extends HTMLElement {
 
     connectedCallback() {
         const templateCopy = template.content.cloneNode(true);
-        // busca el componente de input-action
+
         const inputAction = templateCopy.querySelector("input-action");
 
         inputAction.addEventListener("input-action-submit", (event) => {
             const text = event.detail;
 
-            const newTodoItem = document.createElement("div");
+            const currentTodos = this.getStoredTodos()
+            const newTodo = {
+                text: text,
+                isCompleted: false,
+                id: crypto.randomUUID()
+            }
+            currentTodos.push(newTodo)
+            localStorage.setItem("todos", JSON.stringify(currentTodos));
 
-            newTodoItem.innerHTML = `<todo-item text="${text}"></todo-item>`
-            this.shadowRoot.querySelector(".todo-items-wrapper").appendChild(newTodoItem)
+            this.addTodo(newTodo)
         })
 
         this.shadowRoot.appendChild(templateCopy)
+
+        this.showStoredTodos();
+    }
+
+    getStoredTodos() {
+        const todos = localStorage.getItem("todos");
+
+        return todos ? JSON.parse(todos) : [];
+    }
+
+    showStoredTodos() {
+        const todos = this.getStoredTodos();
+
+        todos.forEach(todo => {
+            this.addTodo(todo)
+        });
+    }
+
+    addTodo(todo) {
+        const newTodoItem = document.createElement("todo-item");
+        this.shadowRoot.querySelector(".todo-items-wrapper").appendChild(newTodoItem)
+        newTodoItem.setAttribute("text", todo.text);
+        newTodoItem.setAttribute("id", todo.id);
+        if (todo.isCompleted) {
+            newTodoItem.setAttribute("is-checked", "");
+        }
+
+        newTodoItem.addEventListener("action-item-status-update", (event) => {
+            const currentTodos = this.getStoredTodos();
+            const updatedTodos = currentTodos.map(todo => {
+                if (todo.id === event.detail.id) {
+                    todo.isCompleted = event.detail.isChecked
+                }
+                return todo;
+            });
+
+            localStorage.setItem("todos", JSON.stringify(updatedTodos))
+        })
+
+        newTodoItem.addEventListener("action-item-remove", (event) => {
+            const idToRemove = event.detail.id;
+            const currentTodos = this.getStoredTodos();
+            const updatedTodos = currentTodos.filter(todo => todo.id !== idToRemove)
+            localStorage.setItem("todos", JSON.stringify(updatedTodos))
+        })
     }
 }
 
