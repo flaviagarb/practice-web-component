@@ -1,8 +1,8 @@
 const template = document.createElement("template");
 
 template.innerHTML = `
-  <div class="kc-component">
-    <input type="text" (/>
+  <div class="input-action">
+    <input />
     <button disabled></button>
   </div>
 `
